@@ -1,0 +1,86 @@
+{
+  "project": "document-intelligence-pipeline",
+  "generated_at": "2026-05-16T00:00:00Z",
+  "predictions": [
+    {
+      "ticket": "Invoice form #82092117 \u2014 supplier name, total, due date, line items",
+      "top_intent": "5 keys / 5 values extracted",
+      "confidence": 0.91,
+      "alternatives": [
+        {
+          "intent": "header lines (skipped)",
+          "confidence": 0.0
+        },
+        {
+          "intent": "totals row (linked)",
+          "confidence": 0.0
+        }
+      ],
+      "inference_ms": 1812.0
+    },
+    {
+      "ticket": "Tax form 1040 \u2014 name, SSN, address, filing status, income",
+      "top_intent": "8 keys / 8 values extracted",
+      "confidence": 0.94,
+      "alternatives": [
+        {
+          "intent": "SSN partially redacted",
+          "confidence": 0.0
+        },
+        {
+          "intent": "address multi-line resolved",
+          "confidence": 0.0
+        }
+      ],
+      "inference_ms": 2034.0
+    },
+    {
+      "ticket": "Insurance claim form (FUNSD #82200067) \u2014 claim number, policy, amount, dates",
+      "top_intent": "6 keys / 5 values extracted",
+      "confidence": 0.86,
+      "alternatives": [
+        {
+          "intent": "1 unmatched key (low confidence)",
+          "confidence": 0.0
+        },
+        {
+          "intent": "ambiguous header pair",
+          "confidence": 0.0
+        }
+      ],
+      "inference_ms": 1956.0
+    },
+    {
+      "ticket": "Patient intake form \u2014 full name, DOB, allergies, medications, emergency contact",
+      "top_intent": "5 keys / 5 values extracted",
+      "confidence": 0.93,
+      "alternatives": [
+        {
+          "intent": "checkbox group consolidated",
+          "confidence": 0.0
+        },
+        {
+          "intent": "phone format normalized",
+          "confidence": 0.0
+        }
+      ],
+      "inference_ms": 1645.0
+    },
+    {
+      "ticket": "Purchase order \u2014 vendor, PO #, line items table, ship-to, total",
+      "top_intent": "12 keys / 11 values extracted",
+      "confidence": 0.88,
+      "alternatives": [
+        {
+          "intent": "table row linking succeeded",
+          "confidence": 0.0
+        },
+        {
+          "intent": "1 missing line value",
+          "confidence": 0.0
+        }
+      ],
+      "inference_ms": 2287.0
+    }
+  ]
+}
