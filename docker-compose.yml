@@ -1,20 +1,40 @@
+# docker compose up --build
+# Not validated in the authoring environment (no Docker daemon available); see docs/architecture.md.
 services:
   postgres:
-    image: pgvector/pgvector:pg16
-    environment: { POSTGRES_USER: docint, POSTGRES_PASSWORD: docint_dev, POSTGRES_DB: docint }
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: docint
+      POSTGRES_PASSWORD: docint_dev
+      POSTGRES_DB: docint
     ports: ["5432:5432"]
     volumes: [postgres-data:/var/lib/postgresql/data]
-    healthcheck: { test: ["CMD-SHELL","pg_isready -U docint"], interval: 5s, retries: 10 }
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docint -d docint"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   api:
     build: .
     env_file: .env
     environment:
       DATABASE_URL: postgresql://docint:docint_dev@postgres:5432/docint
-
+      TESSERACT_CMD: /usr/bin/tesseract
+      CORS_ALLOW_ORIGINS: http://localhost:3000,http://127.0.0.1:5500,http://localhost:8080
     depends_on:
-      postgres: { condition: service_healthy }
-
+      postgres:
+        condition: service_healthy
     ports: ["8000:8000"]
-    volumes: [./src:/app/src, ./data:/app/data]
+
+  demo:
+    # Static gallery + live panel; talks to the api service from the browser.
+    image: python:3.11-slim
+    working_dir: /site
+    command: ["python", "-m", "http.server", "8080", "--bind", "0.0.0.0"]
+    volumes: [./demo:/site:ro]
+    ports: ["8080:8080"]
+    depends_on: [api]
+
 volumes:
   postgres-data:
