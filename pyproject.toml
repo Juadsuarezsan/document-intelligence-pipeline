@@ -1,30 +1,114 @@
-    [project]
-    name = "document-intelligence"
-    version = "0.1.0"
-    description = "Document Intelligence — IDP with VLM fallback over FUNSD/DocVQA"
-    requires-python = ">=3.11,<3.14"
-    license = { text = "MIT" }
-    dependencies = [
-        "fastapi==0.115.0",
-"uvicorn[standard]==0.32.0",
-"pydantic==2.9.2",
-"pydantic-settings==2.6.0",
-"python-dotenv==1.0.1",
-"httpx==0.27.2",
-"tenacity==9.0.0",
-"loguru==0.7.2",
-"anthropic==0.39.0",
-"langchain-anthropic==0.2.4",
-"langgraph==0.2.45",
-"unstructured==0.16.0",
-"pdfplumber==0.11.4",
-"pypdf==5.0.1",
-"pytesseract==0.3.13",
-"pillow==10.4.0",
-"camelot-py[base]==0.11.0",
-"pydantic==2.9.2",
-"psycopg[binary,pool]==3.2.3",
-    ]
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
 
-    [project.optional-dependencies]
-    dev = ["pytest==8.3.3", "pytest-asyncio==0.24.0", "ruff==0.6.9", "black==24.10.0", "mypy==1.11.2"]
+[project]
+name = "document-intelligence"
+version = "0.1.0"
+description = "Intelligent Document Processing: pdfplumber/OCR/Claude Vision parsing, schema-validated field extraction, confidence-gated routing"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = { text = "MIT" }
+authors = [{ name = "Juan David Suárez Sánchez", email = "juadsuarezsan@unal.edu.co" }]
+dependencies = [
+    "fastapi==0.115.0",
+    "uvicorn[standard]==0.32.0",
+    "python-multipart==0.0.12",
+    "pydantic==2.9.2",
+    "pydantic-settings==2.6.0",
+    "python-dotenv==1.0.1",
+    "httpx==0.27.2",
+    "tenacity==9.0.0",
+    "loguru==0.7.2",
+    "anthropic==0.39.0",
+    "langgraph==0.2.45",
+    "pdfplumber==0.11.4",
+    "pypdf==5.0.1",
+    "pytesseract==0.3.13",
+    "pillow==10.4.0",
+    "reportlab==4.2.5",
+    "slowapi==0.1.9",
+    "psycopg[binary,pool]==3.2.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.3",
+    "pytest-asyncio==0.24.0",
+    "pytest-cov==7.1.0",
+    "pytest-mock==3.14.0",
+    "respx==0.21.1",
+    "ruff==0.6.9",
+    "black==24.10.0",
+    "mypy==1.11.2",
+]
+# Heavy optional parsers. `unstructured` needs NLTK model downloads and
+# `camelot-py[base]` pulls OpenCV; both are imported lazily and the code falls
+# back to pdfplumber-based implementations when they are absent.
+heavy = [
+    "unstructured==0.16.0",
+    "camelot-py[base]==0.11.0",
+]
+notebook = ["nbformat==5.10.4", "nbclient==0.10.0", "ipykernel==6.29.5"]
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = [".venv", "notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "W"]
+ignore = ["B008", "B904"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+extend-exclude = "(\\.venv|notebooks)"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unreachable = true
+plugins = ["pydantic.mypy"]
+exclude = ["\\.venv", "tests", "notebooks"]
+
+[[tool.mypy.overrides]]
+module = [
+    "pdfplumber.*",
+    "pytesseract.*",
+    "pypdfium2.*",
+    "reportlab.*",
+    "slowapi.*",
+    "camelot.*",
+    "unstructured.*",
+    "psycopg_pool.*",
+    "langgraph.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-q --strict-markers"
+markers = [
+    "requires_tesseract: needs the tesseract binary (skipped if absent)",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning:pypdfium2.*",
+    "ignore::DeprecationWarning:reportlab.*",
+]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["src/*/__init__.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
