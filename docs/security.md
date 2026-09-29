@@ -5,7 +5,7 @@
 - Ninguna llave en el repositorio. `.env` está en `.gitignore`; `.env.example`
   contiene solo nombres y comentarios.
 - `gitleaks detect --no-banner --redact` (v8.21.2, binario de GitHub
-  Releases) sobre los 17 primeros commits de la rama `claude/fase-a`:
+  Releases) sobre los 26 commits de la rama `claude/fase-a` (historial completo):
   **no leaks found** (2026-09-29). La CI repite el escaneo con
   `gitleaks/gitleaks-action@v2` en cada push y PR.
 - El cliente de Claude recibe la llave desde `Settings`; nunca se loguea. Las
