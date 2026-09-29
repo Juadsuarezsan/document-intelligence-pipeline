@@ -65,6 +65,10 @@ ignore = ["B008", "B904"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["E501"]
+# Long human-readable template strings and Markdown lines.
+"src/synth/documents.py" = ["E501"]
+"src/eval/report.py" = ["E501"]
+"src/extractors/heuristic.py" = ["E501"]
 
 [tool.black]
 line-length = 100
