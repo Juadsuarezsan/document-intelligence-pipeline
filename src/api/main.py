@@ -5,8 +5,8 @@ CORS, mapping domain exceptions to HTTP status codes, trace headers and the
 observability feed. All document logic lives in :mod:`src.pipeline`.
 """
 
-from __future__ import annotations
-
+# No `from __future__ import annotations` on purpose: the slowapi decorator wraps the
+# route functions and FastAPI cannot resolve string annotations through the wrapper.
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from typing import Any

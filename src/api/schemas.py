@@ -6,7 +6,7 @@ over the wire and enforce request validation so bad input returns 422.
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Literal, Self
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -33,7 +33,7 @@ class ExtractRequest(BaseModel):
     force_vlm: bool = Field(default=False, description="Route straight to Claude Vision")
 
     @model_validator(mode="after")
-    def _exactly_one_input(self) -> ExtractRequest:
+    def _exactly_one_input(self) -> Self:
         has_text = bool(self.text and self.text.strip())
         has_pdf = bool(self.pdf_b64 and self.pdf_b64.strip())
         if has_text == has_pdf:

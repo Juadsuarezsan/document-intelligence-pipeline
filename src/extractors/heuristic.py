@@ -243,7 +243,7 @@ def _coerce(field: str, raw: str) -> tuple[str | float | int | None, float]:
     if field in {"invoice_number", "receipt_number", "contract_number", "form_id"}:
         m = _ID_LIKE.search(raw)
         return (m.group(0).strip() if m else raw.strip(), 0.0 if m else 0.2)
-    return (raw.strip(), 0.0)
+    return (raw.strip().rstrip(".;,").strip(), 0.0)
 
 
 def _currency_from_text(text: str) -> str | None:

@@ -91,7 +91,11 @@ def download(url: str, dest: Path, client: httpx.Client, timeout: float = 120.0)
 
 def record_manifest(name: str, path: Path, digest: str, manifest: Path = MANIFEST) -> None:
     """Append (or replace) the manifest line for ``name``."""
-    line = f"{digest}  {path.relative_to(ROOT).as_posix()}  # {name}\n"
+    try:
+        shown = path.relative_to(ROOT).as_posix()
+    except ValueError:  # downloaded outside the repository (tests, custom raw dir)
+        shown = path.as_posix()
+    line = f"{digest}  {shown}  # {name}\n"
     existing = (
         manifest.read_text(encoding="utf-8").splitlines(keepends=True) if manifest.exists() else []
     )

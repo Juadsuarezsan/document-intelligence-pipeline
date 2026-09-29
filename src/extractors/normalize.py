@@ -31,7 +31,7 @@ _ISO_RE = re.compile(r"\b(\d{4})-(\d{2})-(\d{2})\b")
 _DMY_RE = re.compile(r"\b(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})\b")
 _MDY_TEXT_RE = re.compile(r"\b([A-Za-z]{3,10})\.?\s+(\d{1,2}),?\s+(\d{4})\b")
 _DMY_TEXT_RE = re.compile(r"\b(\d{1,2})\s+(?:de\s+)?([A-Za-z]{3,10})\.?,?\s+(?:de\s+)?(\d{4})\b")
-_AMOUNT_RE = re.compile(r"-?\$?\s*(\d{1,3}(?:[.,]\d{3})*|\d+)(?:[.,](\d{1,2}))?")
+_AMOUNT_RE = re.compile(r"(-?)\s*\$?\s*(-?)(\d{1,3}(?:[.,]\d{3})*|\d+)(?:[.,](\d{1,2}))?")
 
 
 def normalize_date(value: str, day_first: bool = True) -> str | None:
@@ -84,14 +84,14 @@ def normalize_amount(value: str | float | int) -> float | None:
     m = _AMOUNT_RE.search(text)
     if not m:
         return None
-    integer_part, decimals = m.group(1), m.group(2)
+    integer_part, decimals = m.group(3), m.group(4)
     digits = re.sub(r"[.,]", "", integer_part)
     if not digits:
         return None
     number = float(digits)
     if decimals:
         number += float(decimals) / (10 ** len(decimals))
-    if text.lstrip().startswith("-"):
+    if m.group(1) or m.group(2):
         number = -number
     return round(number, 2)
 

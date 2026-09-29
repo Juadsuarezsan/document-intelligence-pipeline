@@ -165,8 +165,6 @@ def cell_prf(
         for c in range(len(true_row), len(pred_row)):
             if normalize_text(pred_row[c]):
                 prf.fp += 1
-    for r in range(len(true_grid), len(pred_grid)):
-        prf.fp += sum(1 for cell in pred_grid[r] if normalize_text(cell))
     return prf
 
 
