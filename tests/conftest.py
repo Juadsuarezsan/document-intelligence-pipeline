@@ -20,7 +20,7 @@ SEED = 20260516
 INVOICE_TEXT = (
     "ACME CONSULTING S.A.S.\n"
     "Bogotá - Calle 100\n"
-    "NIT: 900.123.456-9\n"
+    "NIT: 900.123.456-8\n"
     "\n"
     "Invoice No: INV-2026-0042\n"
     "Invoice Date: 2026-03-14\n"

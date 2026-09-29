@@ -36,7 +36,7 @@ def test_normalize_amounts_and_text() -> None:
 def test_heuristic_invoice(invoice_text: str) -> None:
     got = _values(HeuristicExtractor().extract(invoice_text, "invoice").fields)
     assert got["invoice_number"] == "INV-2026-0042"
-    assert got["vendor_tax_id"] == "900.123.456-9"
+    assert got["vendor_tax_id"] == "900.123.456-8"
     assert got["issue_date"] == "2026-03-14"
     assert got["due_date"] == "2026-04-13"
     assert got["subtotal"] == 2100.0 and got["tax"] == 399.0 and got["total"] == 2499.0
