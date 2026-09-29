@@ -1,86 +1,2663 @@
 {
-  "project": "document-intelligence-pipeline",
-  "generated_at": "2026-05-16T00:00:00Z",
-  "predictions": [
-    {
-      "ticket": "Invoice form #82092117 \u2014 supplier name, total, due date, line items",
-      "top_intent": "5 keys / 5 values extracted",
-      "confidence": 0.91,
-      "alternatives": [
-        {
-          "intent": "header lines (skipped)",
-          "confidence": 0.0
-        },
-        {
-          "intent": "totals row (linked)",
-          "confidence": 0.0
-        }
-      ],
-      "inference_ms": 1812.0
+ "project": "document-intelligence-pipeline",
+ "generated_at": "2026-09-29T01:39:04+00:00",
+ "git_commit": "ccffa0d",
+ "pipeline": "heuristic fallback (deterministic, no LLM) - regenerate with make demo",
+ "model_for_llm_paths": "claude-sonnet-4-5-20250929",
+ "items": [
+  {
+   "id": "funsd-0000971160",
+   "source": "funsd",
+   "label": "FUNSD form 0000971160 (real annotation)",
+   "expected_type": "form",
+   "text_preview": "R&D\nR&D QUALITY IMPROVEMENT SUGGESTION/ SOLUTION FORM\nName / Phone Ext. :  M. Hamann P. Harper, P. Martinez  Date:  9/ 3/ 92\nSupervisor / Manager  :  J. S. Wigand  R&D Group:  Licensee\nSuggestion:\nDiscontinue coal retention analyses on licensee submitted product samples (Note : Coal Retention testing is not performed by most licensees. Other B&W physical measurements as ends stability and inspection for soft spots in ciparettes are thought to be sufficient measures to assure cigarette physical integrity. The proposed action will increase laboratory productivity . )\nSuggested Solutions (s) :\nDelete coal retention from the list of standard analyses performed on licensee submitted product samples. Special requests for coal retention testing could still be submitted on an exception basis.\nHave you contacted your Manager/ Supervisor?  Yes  No\nManager Comments:  Manager, please contact suggester and forward\ncomments to the Quality Council.\nqip . wp\n597005708",
+   "ground_truth": {
+    "pairs": [
+     [
+      "Suggestion:",
+      "Discontinue coal retention analyses on licensee submitted product samples (Note : Coal Retention testing is not performed by most licensees. Other B&W physical measurements as ends stability and inspection for soft spots in ciparettes are thought to be sufficient measures to assure cigarette physical integrity. The proposed action will increase laboratory productivity . )"
+     ],
+     [
+      "Date:",
+      "9/ 3/ 92"
+     ],
+     [
+      "Name / Phone Ext. :",
+      "M. Hamann P. Harper, P. Martinez"
+     ],
+     [
+      "R&D Group:",
+      "Licensee"
+     ],
+     [
+      "Supervisor / Manager",
+      "J. S. Wigand"
+     ],
+     [
+      "Suggested Solutions (s) :",
+      "Delete coal retention from the list of standard analyses performed on licensee submitted product samples. Special requests for coal retention testing could still be submitted on an exception basis."
+     ],
+     [
+      "Manager Comments:",
+      "Manager, please contact suggester and forward"
+     ],
+     [
+      "Manager Comments:",
+      "comments to the Quality Council."
+     ]
+    ]
+   },
+   "result": {
+    "trace_id": "20f444097dd349dcae3419caf71fc2fc",
+    "document_type": "form",
+    "classifier_method": "heuristic",
+    "fields": [
+     {
+      "name": "submitter",
+      "value": "M. Hamann P. Harper, P. Martinez",
+      "confidence": 0.7,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "date",
+      "value": "9/ 3/ 92",
+      "confidence": 0.67,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     }
+    ],
+    "tables": [],
+    "findings": [
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "form_id",
+      "message": "required field 'form_id' not found",
+      "details": {}
+     },
+     {
+      "severity": "warn",
+      "code": "non_iso_date",
+      "field": "date",
+      "message": "date is not YYYY-MM-DD",
+      "details": {
+       "value": "9/ 3/ 92"
+      }
+     }
+    ],
+    "overall_confidence": 0.441,
+    "routing": "vlm_fallback",
+    "pipeline_used": "text",
+    "extractor_method": "heuristic",
+    "vlm_reprocessed": false,
+    "n_pages": 1,
+    "latency_ms": 10,
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0,
+     "cost_usd": 0.0,
+     "llm_calls": 0
     },
-    {
-      "ticket": "Tax form 1040 \u2014 name, SSN, address, filing status, income",
-      "top_intent": "8 keys / 8 values extracted",
-      "confidence": 0.94,
-      "alternatives": [
-        {
-          "intent": "SSN partially redacted",
-          "confidence": 0.0
-        },
-        {
-          "intent": "address multi-line resolved",
-          "confidence": 0.0
-        }
-      ],
-      "inference_ms": 2034.0
-    },
-    {
-      "ticket": "Insurance claim form (FUNSD #82200067) \u2014 claim number, policy, amount, dates",
-      "top_intent": "6 keys / 5 values extracted",
-      "confidence": 0.86,
-      "alternatives": [
-        {
-          "intent": "1 unmatched key (low confidence)",
-          "confidence": 0.0
-        },
-        {
-          "intent": "ambiguous header pair",
-          "confidence": 0.0
-        }
-      ],
-      "inference_ms": 1956.0
-    },
-    {
-      "ticket": "Patient intake form \u2014 full name, DOB, allergies, medications, emergency contact",
-      "top_intent": "5 keys / 5 values extracted",
-      "confidence": 0.93,
-      "alternatives": [
-        {
-          "intent": "checkbox group consolidated",
-          "confidence": 0.0
-        },
-        {
-          "intent": "phone format normalized",
-          "confidence": 0.0
-        }
-      ],
-      "inference_ms": 1645.0
-    },
-    {
-      "ticket": "Purchase order \u2014 vendor, PO #, line items table, ship-to, total",
-      "top_intent": "12 keys / 11 values extracted",
+    "node_log": [
+     {
+      "node": "n_ingest",
+      "status": "ok",
+      "ms": 0,
+      "path": "text",
+      "pages": 1,
+      "chars": 966
+     },
+     {
+      "node": "n_classify",
+      "status": "ok",
+      "ms": 1,
+      "doc_type": "form",
+      "method": "heuristic",
+      "conf": 0.5
+     },
+     {
+      "node": "n_tables",
+      "status": "ok",
+      "ms": 0,
+      "tables": 0
+     },
+     {
+      "node": "n_extract",
+      "status": "ok",
+      "ms": 0,
+      "fields": 2,
+      "method": "heuristic"
+     },
+     {
+      "node": "n_validate",
+      "status": "ok",
+      "ms": 0,
+      "findings": 2,
+      "errors": 1
+     },
+     {
+      "node": "n_score",
+      "status": "ok",
+      "ms": 0,
+      "confidence": 0.441,
+      "routing": "vlm_fallback"
+     }
+    ]
+   }
+  },
+  {
+   "id": "funsd-0000989556",
+   "source": "funsd",
+   "label": "FUNSD form 0000989556 (real annotation)",
+   "expected_type": "form",
+   "text_preview": "Page 1 of 10\nRESTRICTED BROWN & WILLIAMSON INTERNATIONAL TOBACCO PRODUCT SPECIFICATION\nBrand:  PHOENIX  Company:  B. A. T. CYPRUS\nStyle:  HLB- KS  Country:  CYPRUS\nLicensee Ref. NO.:  Macket:\nPlace of Manufacture:  NICOSIA\nCIGARETTE MAKING\nPhysical Characteristics  Weights\nOverall Cigarette Length  84 mm  Total Cigt. Wt.  974 mg\nTobacco Rod Length  64 mm\nFilter Plug Length  20 mm  Net Net Tobacco  749 mg\nFilter Plug Pressure Drop (unencap.)  56 mm\nFilter Plug Pressure Drop encap.  56 mm  Net Tob. Rod Density  245 mg/cc\nCigarette Circumference  24.75 mm\nTotal Pressure Drop (unencap.)  90 mm\nTotal Pressure Drop (encap.)  110 mm\nTipping Length  25 mm\nPrint Position (from filter end)  27 mm\nMoisture content (ex-catcher)  13.5 %\nFilter ventilation Rate  Nil %\nTipping and Tipping Application\nTipping Paper:  Adhesive:\nSupplier(s)  Ecusta  Supplier (s)  Swift\nColor  Supplier Code No(s).  E.30639  Supplier Code No (s)  T.K. 9220\nImitation Cork  Type  Printed Imitation cork\nPerforation Type and No. of lines  None  Application Pattern:\nPorosity  (coresta)  Overall  x  skip  Other\nPrint Description  Brown on yellow\nBobbin Width  Robbin Length  50 mm mm  Glue Pree Area  N/A\nsubstance  2700 m  Dimension  mm x mm\n36 gm/ m2  Positioning  mm from mouth end\n(Indicate N/A If Not Applicable)\nPrepared by:  M. HAMERTON / enm\nDate:  May 1, 1985\nApproved by:\nDirector of Technical Operations, Brown & Williamson International Tobacco\nDate:  May 1, 1985\nReplaces:  New  Date:  May 1, 1985\n05045\n620419245",
+   "ground_truth": {
+    "pairs": [
+     [
+      "Brand:",
+      "PHOENIX"
+     ],
+     [
+      "Style:",
+      "HLB- KS"
+     ],
+     [
+      "Company:",
+      "B. A. T. CYPRUS"
+     ],
+     [
+      "Country:",
+      "CYPRUS"
+     ],
+     [
+      "Supplier(s)",
+      "Ecusta"
+     ],
+     [
+      "Color",
+      "Imitation Cork"
+     ],
+     [
+      "Porosity",
+      "(coresta)"
+     ],
+     [
+      "substance",
+      "36 gm/ m2"
+     ],
+     [
+      "Type",
+      "Printed Imitation cork"
+     ],
+     [
+      "Overall",
+      "x"
+     ],
+     [
+      "Dimension",
+      "mm x mm"
+     ],
+     [
+      "Positioning",
+      "mm from mouth end"
+     ],
+     [
+      "Date:",
+      "May 1, 1985"
+     ],
+     [
+      "Date:",
+      "May 1, 1985"
+     ],
+     [
+      "Date:",
+      "May 1, 1985"
+     ],
+     [
+      "Replaces:",
+      "New"
+     ],
+     [
+      "Place of Manufacture:",
+      "NICOSIA"
+     ],
+     [
+      "Overall Cigarette Length",
+      "84 mm"
+     ],
+     [
+      "Tobacco Rod Length",
+      "64 mm"
+     ],
+     [
+      "Filter Plug Length",
+      "20 mm"
+     ],
+     [
+      "Filter Plug Pressure Drop (unencap.)",
+      "56 mm"
+     ],
+     [
+      "Filter Plug Pressure Drop encap.",
+      "56 mm"
+     ],
+     [
+      "Cigarette Circumference",
+      "24.75 mm"
+     ],
+     [
+      "Total Pressure Drop (unencap.)",
+      "90 mm"
+     ],
+     [
+      "Total Pressure Drop (encap.)",
+      "110 mm"
+     ],
+     [
+      "Tipping Length",
+      "25 mm"
+     ],
+     [
+      "Print Position (from filter end)",
+      "27 mm"
+     ],
+     [
+      "Moisture content (ex-catcher)",
+      "13.5 %"
+     ],
+     [
+      "Filter ventilation Rate",
+      "Nil %"
+     ],
+     [
+      "Total Cigt. Wt.",
+      "974 mg"
+     ],
+     [
+      "Net Tob. Rod Density",
+      "245 mg/cc"
+     ],
+     [
+      "Net Net Tobacco",
+      "749 mg"
+     ],
+     [
+      "Supplier Code No(s).",
+      "E.30639"
+     ],
+     [
+      "Perforation Type and No. of lines",
+      "None"
+     ],
+     [
+      "Print Description",
+      "Brown on yellow"
+     ],
+     [
+      "Bobbin Width",
+      "50 mm mm"
+     ],
+     [
+      "Robbin Length",
+      "2700 m"
+     ],
+     [
+      "Supplier (s)",
+      "Swift"
+     ],
+     [
+      "Supplier Code No (s)",
+      "T.K. 9220"
+     ],
+     [
+      "Glue Pree Area",
+      "N/A"
+     ],
+     [
+      "Prepared by:",
+      "M. HAMERTON / enm"
+     ],
+     [
+      "Approved by:",
+      "Director of Technical Operations, Brown & Williamson International Tobacco"
+     ]
+    ]
+   },
+   "result": {
+    "trace_id": "aec755c837194529882b6a6ddd83d295",
+    "document_type": "report",
+    "classifier_method": "heuristic",
+    "fields": [
+     {
+      "name": "author",
+      "value": "M. HAMERTON / enm",
       "confidence": 0.88,
-      "alternatives": [
-        {
-          "intent": "table row linking succeeded",
-          "confidence": 0.0
-        },
-        {
-          "intent": "1 missing line value",
-          "confidence": 0.0
-        }
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "date",
+      "value": "1985-05-01",
+      "confidence": 0.92,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "title",
+      "value": "RESTRICTED BROWN & WILLIAMSON INTERNATIONAL TOBACCO PRODUCT SPECIFICATION",
+      "confidence": 0.6,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     }
+    ],
+    "tables": [],
+    "findings": [],
+    "overall_confidence": 0.8,
+    "routing": "human_review",
+    "pipeline_used": "text",
+    "extractor_method": "heuristic",
+    "vlm_reprocessed": false,
+    "n_pages": 1,
+    "latency_ms": 6,
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0,
+     "cost_usd": 0.0,
+     "llm_calls": 0
+    },
+    "node_log": [
+     {
+      "node": "n_ingest",
+      "status": "ok",
+      "ms": 0,
+      "path": "text",
+      "pages": 1,
+      "chars": 1501
+     },
+     {
+      "node": "n_classify",
+      "status": "ok",
+      "ms": 0,
+      "doc_type": "report",
+      "method": "heuristic",
+      "conf": 0.65
+     },
+     {
+      "node": "n_tables",
+      "status": "ok",
+      "ms": 0,
+      "tables": 0
+     },
+     {
+      "node": "n_extract",
+      "status": "ok",
+      "ms": 0,
+      "fields": 3,
+      "method": "heuristic"
+     },
+     {
+      "node": "n_validate",
+      "status": "ok",
+      "ms": 0,
+      "findings": 0,
+      "errors": 0
+     },
+     {
+      "node": "n_score",
+      "status": "ok",
+      "ms": 0,
+      "confidence": 0.8,
+      "routing": "human_review"
+     }
+    ]
+   }
+  },
+  {
+   "id": "funsd-0000990274",
+   "source": "funsd",
+   "label": "FUNSD form 0000990274 (real annotation)",
+   "expected_type": "form",
+   "text_preview": "SERVICE REQUEST FROM R & D BY INTERNATIONAL LICENSEE OPERATIONS\nREQUEST NO.:  25- 84  RECEIVED\nDATE:  March 27, 1984  APR 2 1984 P. H. H.\nINITIATED  BY:  P. H. HARPER PHH\nCOMPLETION\nTARGET DATE:  April 13, 1984\nCOUNTRY:  BELGIUM\nPRODUCT:  LUCKY STRIKE Filter and VICEROY\nNATURE OF WORK:\nAdvise if locally obtained Yucatan Honey (sample enclosed) is an acceptable substitute for HALWAY.\nR & D COMMENTS:\nTarget the P A 29Mar 84\nBY:\nDATE:\nNOTES:  a) Nature of work should be specified in exact terms.\nb) R & D should advise if completion date cannot be met.\nc) Two copies of this form to be sent to R & D by initiator and R & D is to return to T. O. one completed copy.\nMH/ enm\n0036/ (r) # 2894M\n620429480",
+   "ground_truth": {
+    "pairs": [
+     [
+      "DATE:",
+      "March 27, 1984"
+     ],
+     [
+      "INITIATED",
+      "P. H. HARPER PHH"
+     ],
+     [
+      "BY:",
+      "P. H. HARPER PHH"
+     ],
+     [
+      "COUNTRY:",
+      "BELGIUM"
+     ],
+     [
+      "PRODUCT:",
+      "LUCKY STRIKE Filter and VICEROY"
+     ],
+     [
+      "NOTES:",
+      "a) Nature of work should be specified in exact terms."
+     ],
+     [
+      "NOTES:",
+      "b) R & D should advise if completion date cannot be met."
+     ],
+     [
+      "NOTES:",
+      "c) Two copies of this form to be sent to R & D by initiator and R & D is to return to T. O. one completed copy."
+     ],
+     [
+      "RECEIVED",
+      "APR 2 1984 P. H. H."
+     ],
+     [
+      "REQUEST NO.:",
+      "25- 84"
+     ],
+     [
+      "TARGET DATE:",
+      "April 13, 1984"
+     ],
+     [
+      "NATURE OF WORK:",
+      "Advise if locally obtained Yucatan Honey (sample enclosed) is an acceptable substitute for HALWAY."
+     ],
+     [
+      "R & D COMMENTS:",
+      "Target the P A 29Mar 84"
+     ]
+    ]
+   },
+   "result": {
+    "trace_id": "edef9079ece64d9696003c002cf62b7a",
+    "document_type": "form",
+    "classifier_method": "heuristic",
+    "fields": [
+     {
+      "name": "date",
+      "value": "1984-03-27",
+      "confidence": 0.92,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     }
+    ],
+    "tables": [],
+    "findings": [
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "form_id",
+      "message": "required field 'form_id' not found",
+      "details": {}
+     },
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "submitter",
+      "message": "required field 'submitter' not found",
+      "details": {}
+     }
+    ],
+    "overall_confidence": 0.413,
+    "routing": "vlm_fallback",
+    "pipeline_used": "text",
+    "extractor_method": "heuristic",
+    "vlm_reprocessed": false,
+    "n_pages": 1,
+    "latency_ms": 5,
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0,
+     "cost_usd": 0.0,
+     "llm_calls": 0
+    },
+    "node_log": [
+     {
+      "node": "n_ingest",
+      "status": "ok",
+      "ms": 0,
+      "path": "text",
+      "pages": 1,
+      "chars": 702
+     },
+     {
+      "node": "n_classify",
+      "status": "ok",
+      "ms": 0,
+      "doc_type": "form",
+      "method": "heuristic",
+      "conf": 0.8
+     },
+     {
+      "node": "n_tables",
+      "status": "ok",
+      "ms": 0,
+      "tables": 0
+     },
+     {
+      "node": "n_extract",
+      "status": "ok",
+      "ms": 0,
+      "fields": 1,
+      "method": "heuristic"
+     },
+     {
+      "node": "n_validate",
+      "status": "ok",
+      "ms": 0,
+      "findings": 2,
+      "errors": 2
+     },
+     {
+      "node": "n_score",
+      "status": "ok",
+      "ms": 0,
+      "confidence": 0.413,
+      "routing": "vlm_fallback"
+     }
+    ]
+   }
+  },
+  {
+   "id": "funsd-0000999294",
+   "source": "funsd",
+   "label": "FUNSD form 0000999294 (real annotation)",
+   "expected_type": "form",
+   "text_preview": "PDC #  C273- 82- 7\nPROJECT #  1982 102KL\nTOP- LINES MENTHOL PRODUCT TEST  PAGE #  1 of 4\nSUBJECT:  KOOL Lights KS vs. Bright KS Product Monitor\nSAMPLE:  408 Menthol Lights / 105 Menthol Ultra, 111 Non- Menthol Lights / 92 Non- Menthol Ultras)\nFIELD DATE:  September 13, 1982\nTAR  NIC  MOIST  MENT\nCIGARETTES:  # 839 / 869  KOOL Lights KS- white tip- ping masked  9.1  .88  14.0  .4 4\n# 369 / 839  Bright KS white tipping-  5. 5  .55  13. 5  .841\nmasked / a certain proportion of the menthol result is pep- perrront oil; R&D is unable to determine the percentage.\nTotal Menthol Smokers\nPREFERENCE:  (n=)  Total (205)  Male (99)  Female (106)  21- 34 (96)  35+ 109\nKOOL Lights  53+++  60+++  46  56+++  50\nBright  39  34  43  35  42\nNo Preference  8  6  11  9  8\n200  100  100  100  100\nATTRIBUTES:  Total  Male  Female  21- 34  35+\nKL  Bright  KL  Bright  KL  Bright  KL  Bright  KL  Bright\nSTRENGTH (7= Stronger)  4.31***  4.59  4.09**  4.45  4.51  4.71  4.35**  4.74  4.27  4.45\nSMOOTHNESS (7= 5moother  3.60**  3.42  3.73**  3.43  3.47  3.41  3.61*  3.38  3.58  3.46\nAMT MENTHOL (7= More)  3.64***  4.94  3.58***  4.85  3.70***  5.02  3.63***  5.31  3.65***  4.61\nMENTHOL TASTE (7= Better  3.39***  3.04  3.46***  3.02  3.33**  3.06  3.45***  2.99  2.34**  2.08\nSATISFYING (7= More  3.12***  2.78  3.28***  2.78  2.97*  2.78  3.17***  2.74  3.08**  2.82\nAPTERTASTE (7= Pleasant)  3.56***  3.24  3.69***  3.21  3.44  3.26  3.52***  3.07  3.60*  3.39\nEASE OF DRAW 17 Easier  4.00  3.96  4.02  3.95  3.99  3.96  4.07**  3.92  3.94  3.99\nNOTE  Attribute  scores  reflectia  a  comparison  of  the  test  product  to  the  smoker's  most  often  brand\n+/-/*  Directional Difference:  66 79% confidence Level\n++/--/**  Marginal Difference:  80- 94% confidence Level\n+++/---/***  Significant Difference:  ",
+   "ground_truth": {
+    "pairs": [
+     [
+      "SUBJECT:",
+      "KOOL Lights KS vs. Bright KS Product Monitor"
+     ],
+     [
+      "SAMPLE:",
+      "408 Menthol Lights / 105 Menthol Ultra, 111 Non- Menthol Lights / 92 Non- Menthol Ultras)"
+     ],
+     [
+      "CIGARETTES:",
+      "# 839 / 869"
+     ],
+     [
+      "TAR",
+      "9.1"
+     ],
+     [
+      "TAR",
+      "5. 5"
+     ],
+     [
+      "NIC",
+      ".88"
+     ],
+     [
+      "NIC",
+      ".55"
+     ],
+     [
+      "MOIST",
+      "14.0"
+     ],
+     [
+      "MOIST",
+      "13. 5"
+     ],
+     [
+      "MENT",
+      ".4 4"
+     ],
+     [
+      "MENT",
+      ".841"
+     ],
+     [
+      "Bright",
+      "39"
+     ],
+     [
+      "Bright",
+      "34"
+     ],
+     [
+      "Bright",
+      "43"
+     ],
+     [
+      "Bright",
+      "35"
+     ],
+     [
+      "Bright",
+      "42"
+     ],
+     [
+      "Male",
+      "KL"
+     ],
+     [
+      "KL",
+      "4.31***"
+     ],
+     [
+      "KL",
+      "3.60**"
+     ],
+     [
+      "KL",
+      "3.64***"
+     ],
+     [
+      "KL",
+      "3.39***"
+     ],
+     [
+      "KL",
+      "3.12***"
+     ],
+     [
+      "KL",
+      "3.56***"
+     ],
+     [
+      "KL",
+      "4.00"
+     ],
+     [
+      "Bright",
+      "4.59"
+     ],
+     [
+      "Bright",
+      "3.42"
+     ],
+     [
+      "Bright",
+      "4.94"
+     ],
+     [
+      "Bright",
+      "3.04"
+     ],
+     [
+      "Bright",
+      "2.78"
+     ],
+     [
+      "Bright",
+      "3.24"
+     ],
+     [
+      "Bright",
+      "3.96"
+     ],
+     [
+      "Bright",
+      "4.45"
+     ],
+     [
+      "Bright",
+      "3.43"
+     ],
+     [
+      "Bright",
+      "4.85"
+     ],
+     [
+      "Bright",
+      "3.02"
+     ],
+     [
+      "Bright",
+      "2.78"
+     ],
+     [
+      "Bright",
+      "3.21"
+     ],
+     [
+      "Bright",
+      "3.95"
+     ],
+     [
+      "KL",
+      "4.51"
+     ],
+     [
+      "KL",
+      "3.47"
+     ],
+     [
+      "KL",
+      "3.70***"
+     ],
+     [
+      "KL",
+      "3.33**"
+     ],
+     [
+      "KL",
+      "2.97*"
+     ],
+     [
+      "KL",
+      "3.44"
+     ],
+     [
+      "KL",
+      "3.99"
+     ],
+     [
+      "Bright",
+      "4.71"
+     ],
+     [
+      "Bright",
+      "3.41"
+     ],
+     [
+      "Bright",
+      "5.02"
+     ],
+     [
+      "Bright",
+      "3.06"
+     ],
+     [
+      "Bright",
+      "2.78"
+     ],
+     [
+      "Bright",
+      "3.26"
+     ],
+     [
+      "Bright",
+      "3.96"
+     ],
+     [
+      "KL",
+      "4.35**"
+     ],
+     [
+      "KL",
+      "3.61*"
+     ],
+     [
+      "KL",
+      "3.63***"
+     ],
+     [
+      "KL",
+      "3.45***"
+     ],
+     [
+      "KL",
+      "3.17***"
+     ],
+     [
+      "KL",
+      "3.52***"
+     ],
+     [
+      "KL",
+      "4.07**"
+     ],
+     [
+      "Bright",
+      "4.74"
+     ],
+     [
+      "Bright",
+      "3.38"
+     ],
+     [
+      "Bright",
+      "5.31"
+     ],
+     [
+      "Bright",
+      "2.99"
+     ],
+     [
+      "Bright",
+      "2.74"
+     ],
+     [
+      "Bright",
+      "3.07"
+     ],
+     [
+      "Bright",
+      "3.92"
+     ],
+     [
+      "KL",
+      "4.27"
+     ],
+     [
+      "KL",
+      "3.58"
+     ],
+     [
+      "KL",
+      "3.65***"
+     ],
+     [
+      "KL",
+      "2.34**"
+     ],
+     [
+      "KL",
+      "3.08**"
+     ],
+     [
+      "KL",
+      "3.60*"
+     ],
+     [
+      "KL",
+      "3.94"
+     ],
+     [
+      "Bright",
+      "4.45"
+     ],
+     [
+      "Bright",
+      "3.46"
+     ],
+     [
+      "Bright",
+      "4.61"
+     ],
+     [
+      "Bright",
+      "2.08"
+     ],
+     [
+      "Bright",
+      "2.82"
+     ],
+     [
+      "Bright",
+      "3.39"
+     ],
+     [
+      "Bright",
+      "3.99"
+     ],
+     [
+      "PDC #",
+      "C273- 82- 7"
+     ],
+     [
+      "PROJECT #",
+      "1982 102KL"
+     ],
+     [
+      "PAGE #",
+      "1 of 4"
+     ],
+     [
+      "FIELD DATE:",
+      "September 13, 1982"
+     ],
+     [
+      "KOOL Lights KS- white tip- ping masked",
+      "9.1"
+     ],
+     [
+      "KOOL Lights KS- white tip- ping masked",
+      ".88"
+     ],
+     [
+      "KOOL Lights KS- white tip- ping masked",
+      "14.0"
+     ],
+     [
+      "KOOL Lights KS- white tip- ping masked",
+      ".4 4"
+     ],
+     [
+      "Bright KS white tipping-",
+      "5. 5"
+     ],
+     [
+      "Bright KS white tipping-",
+      ".55"
+     ],
+     [
+      "Bright KS white tipping-",
+      "13. 5"
+     ],
+     [
+      "Bright KS white tipping-",
+      ".841"
+     ],
+     [
+      "Total (205)",
+      "53+++"
+     ],
+     [
+      "Total (205)",
+      "39"
+     ],
+     [
+      "Total (205)",
+      "8"
+     ],
+     [
+      "Total (205)",
+      "200"
+     ],
+     [
+      "Male (99)",
+      "60+++"
+     ],
+     [
+      "Male (99)",
+      "34"
+     ],
+     [
+      "Male (99)",
+      "6"
+     ],
+     [
+      "Male (99)",
+      "100"
+     ],
+     [
+      "Female (106)",
+      "46"
+     ],
+     [
+      "Female (106)",
+      "43"
+     ],
+     [
+      "Female (106)",
+      "11"
+     ],
+     [
+      "Female (106)",
+      "100"
+     ],
+     [
+      "21- 34 (96)",
+      "56+++"
+     ],
+     [
+      "21- 34 (96)",
+      "35"
+     ],
+     [
+      "21- 34 (96)",
+      "9"
+     ],
+     [
+      "21- 34 (96)",
+      "100"
+     ],
+     [
+      "35+ 109",
+      "50"
+     ],
+     [
+      "35+ 109",
+      "42"
+     ],
+     [
+      "35+ 109",
+      "8"
+     ],
+     [
+      "35+ 109",
+      "100"
+     ],
+     [
+      "KOOL Lights",
+      "53+++"
+     ],
+     [
+      "KOOL Lights",
+      "60+++"
+     ],
+     [
+      "KOOL Lights",
+      "46"
+     ],
+     [
+      "KOOL Lights",
+      "56+++"
+     ],
+     [
+      "KOOL Lights",
+      "50"
+     ],
+     [
+      "No Preference",
+      "8"
+     ],
+     [
+      "No Preference",
+      "6"
+     ],
+     [
+      "No Preference",
+      "11"
+     ],
+     [
+      "No Preference",
+      "9"
+     ],
+     [
+      "No Preference",
+      "8"
+     ],
+     [
+      "STRENGTH (7= Stronger)",
+      "4.31***"
+     ],
+     [
+      "STRENGTH (7= Stronger)",
+      "4.59"
+     ],
+     [
+      "STRENGTH (7= Stronger)",
+      "4.09**"
+     ],
+     [
+      "STRENGTH (7= Stronger)",
+      "4.45"
+     ],
+     [
+      "STRENGTH (7= Stronger)",
+      "4.51"
+     ],
+     [
+      "STRENGTH (7= Stronger)",
+      "4.71"
+     ],
+     [
+      "STRENGTH (7= Stronger)",
+      "4.35**"
+     ],
+     [
+      "STRENGTH (7= Stronger)",
+      "4.74"
+     ],
+     [
+      "STRENGTH (7= Stronger)",
+      "4.27"
+     ],
+     [
+      "STRENGTH (7= Stronger)",
+      "4.45"
+     ],
+     [
+      "SMOOTHNESS (7= 5moother",
+      "3.60**"
+     ],
+     [
+      "SMOOTHNESS (7= 5moother",
+      "3.42"
+     ],
+     [
+      "SMOOTHNESS (7= 5moother",
+      "3.73**"
+     ],
+     [
+      "SMOOTHNESS (7= 5moother",
+      "3.43"
+     ],
+     [
+      "SMOOTHNESS (7= 5moother",
+      "3.47"
+     ],
+     [
+      "SMOOTHNESS (7= 5moother",
+      "3.41"
+     ],
+     [
+      "SMOOTHNESS (7= 5moother",
+      "3.61*"
+     ],
+     [
+      "SMOOTHNESS (7= 5moother",
+      "3.38"
+     ],
+     [
+      "SMOOTHNESS (7= 5moother",
+      "3.58"
+     ],
+     [
+      "SMOOTHNESS (7= 5moother",
+      "3.46"
+     ],
+     [
+      "AMT MENTHOL (7= More)",
+      "3.64***"
+     ],
+     [
+      "AMT MENTHOL (7= More)",
+      "4.94"
+     ],
+     [
+      "AMT MENTHOL (7= More)",
+      "3.58***"
+     ],
+     [
+      "AMT MENTHOL (7= More)",
+      "4.85"
+     ],
+     [
+      "AMT MENTHOL (7= More)",
+      "3.70***"
+     ],
+     [
+      "AMT MENTHOL (7= More)",
+      "5.02"
+     ],
+     [
+      "AMT MENTHOL (7= More)",
+      "3.63***"
+     ],
+     [
+      "AMT MENTHOL (7= More)",
+      "5.31"
+     ],
+     [
+      "AMT MENTHOL (7= More)",
+      "3.65***"
+     ],
+     [
+      "AMT MENTHOL (7= More)",
+      "4.61"
+     ],
+     [
+      "MENTHOL TASTE (7= Better",
+      "3.39***"
+     ],
+     [
+      "MENTHOL TASTE (7= Better",
+      "3.04"
+     ],
+     [
+      "MENTHOL TASTE (7= Better",
+      "3.46***"
+     ],
+     [
+      "MENTHOL TASTE (7= Better",
+      "3.02"
+     ],
+     [
+      "MENTHOL TASTE (7= Better",
+      "3.33**"
+     ],
+     [
+      "MENTHOL TASTE (7= Better",
+      "3.06"
+     ],
+     [
+      "MENTHOL TASTE (7= Better",
+      "3.45***"
+     ],
+     [
+      "MENTHOL TASTE (7= Better",
+      "2.99"
+     ],
+     [
+      "MENTHOL TASTE (7= Better",
+      "2.34**"
+     ],
+     [
+      "MENTHOL TASTE (7= Better",
+      "2.08"
+     ],
+     [
+      "SATISFYING (7= More",
+      "3.12***"
+     ],
+     [
+      "SATISFYING (7= More",
+      "2.78"
+     ],
+     [
+      "SATISFYING (7= More",
+      "3.28***"
+     ],
+     [
+      "SATISFYING (7= More",
+      "2.78"
+     ],
+     [
+      "SATISFYING (7= More",
+      "2.97*"
+     ],
+     [
+      "SATISFYING (7= More",
+      "2.78"
+     ],
+     [
+      "SATISFYING (7= More",
+      "3.17***"
+     ],
+     [
+      "SATISFYING (7= More",
+      "2.74"
+     ],
+     [
+      "SATISFYING (7= More",
+      "3.08**"
+     ],
+     [
+      "SATISFYING (7= More",
+      "2.82"
+     ],
+     [
+      "APTERTASTE (7= Pleasant)",
+      "3.56***"
+     ],
+     [
+      "APTERTASTE (7= Pleasant)",
+      "3.24"
+     ],
+     [
+      "APTERTASTE (7= Pleasant)",
+      "3.69***"
+     ],
+     [
+      "APTERTASTE (7= Pleasant)",
+      "3.21"
+     ],
+     [
+      "APTERTASTE (7= Pleasant)",
+      "3.44"
+     ],
+     [
+      "APTERTASTE (7= Pleasant)",
+      "3.26"
+     ],
+     [
+      "APTERTASTE (7= Pleasant)",
+      "3.52***"
+     ],
+     [
+      "APTERTASTE (7= Pleasant)",
+      "3.07"
+     ],
+     [
+      "APTERTASTE (7= Pleasant)",
+      "3.60*"
+     ],
+     [
+      "APTERTASTE (7= Pleasant)",
+      "3.39"
+     ],
+     [
+      "EASE OF DRAW 17 Easier",
+      "4.00"
+     ],
+     [
+      "EASE OF DRAW 17 Easier",
+      "3.96"
+     ],
+     [
+      "EASE OF DRAW 17 Easier",
+      "4.02"
+     ],
+     [
+      "EASE OF DRAW 17 Easier",
+      "3.95"
+     ],
+     [
+      "EASE OF DRAW 17 Easier",
+      "3.99"
+     ],
+     [
+      "EASE OF DRAW 17 Easier",
+      "3.96"
+     ],
+     [
+      "EASE OF DRAW 17 Easier",
+      "4.07**"
+     ],
+     [
+      "EASE OF DRAW 17 Easier",
+      "3.92"
+     ],
+     [
+      "EASE OF DRAW 17 Easier",
+      "3.94"
+     ],
+     [
+      "EASE OF DRAW 17 Easier",
+      "3.99"
+     ],
+     [
+      "Directional Difference:",
+      "66 79% confidence Level"
+     ],
+     [
+      "Marginal Difference:",
+      "80- 94% confidence Level"
+     ],
+     [
+      "Significant Difference:",
+      "95+% confidence Level"
+     ]
+    ]
+   },
+   "result": {
+    "trace_id": "db4624accbf84671acb85a1b61013e10",
+    "document_type": "form",
+    "classifier_method": "heuristic",
+    "fields": [],
+    "tables": [],
+    "findings": [
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "form_id",
+      "message": "required field 'form_id' not found",
+      "details": {}
+     },
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "submitter",
+      "message": "required field 'submitter' not found",
+      "details": {}
+     },
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "date",
+      "message": "required field 'date' not found",
+      "details": {}
+     }
+    ],
+    "overall_confidence": 0.0,
+    "routing": "vlm_fallback",
+    "pipeline_used": "text",
+    "extractor_method": "heuristic",
+    "vlm_reprocessed": false,
+    "n_pages": 1,
+    "latency_ms": 5,
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0,
+     "cost_usd": 0.0,
+     "llm_calls": 0
+    },
+    "node_log": [
+     {
+      "node": "n_ingest",
+      "status": "ok",
+      "ms": 0,
+      "path": "text",
+      "pages": 1,
+      "chars": 1831
+     },
+     {
+      "node": "n_classify",
+      "status": "ok",
+      "ms": 0,
+      "doc_type": "form",
+      "method": "heuristic",
+      "conf": 0.5
+     },
+     {
+      "node": "n_tables",
+      "status": "ok",
+      "ms": 0,
+      "tables": 0
+     },
+     {
+      "node": "n_extract",
+      "status": "ok",
+      "ms": 0,
+      "fields": 0,
+      "method": "heuristic"
+     },
+     {
+      "node": "n_validate",
+      "status": "ok",
+      "ms": 0,
+      "findings": 3,
+      "errors": 3
+     },
+     {
+      "node": "n_score",
+      "status": "ok",
+      "ms": 0,
+      "confidence": 0.0,
+      "routing": "vlm_fallback"
+     }
+    ]
+   }
+  },
+  {
+   "id": "funsd-0001118259",
+   "source": "funsd",
+   "label": "FUNSD form 0001118259 (real annotation)",
+   "expected_type": "form",
+   "text_preview": "Reconstituted Tobacco Leaf Substitutions Export Formulas\nB&W  Revision Date:\nAllowable Grade Substitutions for Export CPCL\nStandard Grade Mark  Allowable Substitutions\nPCFS Flue cured fines  RPCFS or RPCFS-O\nPCBS Burley fines  RPCBS OT RPCBS- O\nWCC\nMC- 4 Manufacturing fines  MC -4 -S\nMC -4 -PH\nMC -4 -RC\nMC -4 -W\nMC -6 Stem Meal  MC -1\nMC -7 Winnowers  C Stem\nRXF Fine flue cured stem  RRXF or RRXF -O\nRRXM -B\nRRXM -T\nRBF Fine Burely stem  RRBF or RRBF -O\nRRB -B\nRRB -L\nRRB -T\n621800455",
+   "ground_truth": {
+    "pairs": [
+     [
+      "Standard Grade Mark",
+      "PCFS Flue cured fines"
+     ],
+     [
+      "Standard Grade Mark",
+      "PCBS Burley fines"
+     ],
+     [
+      "Standard Grade Mark",
+      "MC- 4 Manufacturing fines"
+     ],
+     [
+      "Standard Grade Mark",
+      "MC -6 Stem Meal"
+     ],
+     [
+      "Standard Grade Mark",
+      "MC -7 Winnowers"
+     ],
+     [
+      "Standard Grade Mark",
+      "RXF Fine flue cured stem"
+     ],
+     [
+      "Standard Grade Mark",
+      "RBF Fine Burely stem"
+     ],
+     [
+      "Allowable Substitutions",
+      "RPCFS or RPCFS-O"
+     ],
+     [
+      "Allowable Substitutions",
+      "RPCBS OT RPCBS- O"
+     ],
+     [
+      "Allowable Substitutions",
+      "WCC"
+     ],
+     [
+      "Allowable Substitutions",
+      "MC -4 -S"
+     ],
+     [
+      "Allowable Substitutions",
+      "MC -4 -PH"
+     ],
+     [
+      "Allowable Substitutions",
+      "MC -4 -RC"
+     ],
+     [
+      "Allowable Substitutions",
+      "MC -4 -W"
+     ],
+     [
+      "Allowable Substitutions",
+      "MC -1"
+     ],
+     [
+      "Allowable Substitutions",
+      "C Stem"
+     ],
+     [
+      "Allowable Substitutions",
+      "RRXF or RRXF -O"
+     ],
+     [
+      "Allowable Substitutions",
+      "RRXM -B"
+     ],
+     [
+      "Allowable Substitutions",
+      "RRXM -T"
+     ],
+     [
+      "Allowable Substitutions",
+      "RRBF or RRBF -O"
+     ],
+     [
+      "Allowable Substitutions",
+      "RRB -B"
+     ],
+     [
+      "Allowable Substitutions",
+      "RRB -L"
+     ],
+     [
+      "Allowable Substitutions",
+      "RRB -T"
+     ]
+    ]
+   },
+   "result": {
+    "trace_id": "8deeba0140a74ec4b8ee1bb6b57d2160",
+    "document_type": "form",
+    "classifier_method": "heuristic",
+    "fields": [],
+    "tables": [],
+    "findings": [
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "form_id",
+      "message": "required field 'form_id' not found",
+      "details": {}
+     },
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "submitter",
+      "message": "required field 'submitter' not found",
+      "details": {}
+     },
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "date",
+      "message": "required field 'date' not found",
+      "details": {}
+     }
+    ],
+    "overall_confidence": 0.0,
+    "routing": "vlm_fallback",
+    "pipeline_used": "text",
+    "extractor_method": "heuristic",
+    "vlm_reprocessed": false,
+    "n_pages": 1,
+    "latency_ms": 5,
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0,
+     "cost_usd": 0.0,
+     "llm_calls": 0
+    },
+    "node_log": [
+     {
+      "node": "n_ingest",
+      "status": "ok",
+      "ms": 0,
+      "path": "text",
+      "pages": 1,
+      "chars": 487
+     },
+     {
+      "node": "n_classify",
+      "status": "ok",
+      "ms": 0,
+      "doc_type": "form",
+      "method": "heuristic",
+      "conf": 0.5
+     },
+     {
+      "node": "n_tables",
+      "status": "ok",
+      "ms": 0,
+      "tables": 0
+     },
+     {
+      "node": "n_extract",
+      "status": "ok",
+      "ms": 0,
+      "fields": 0,
+      "method": "heuristic"
+     },
+     {
+      "node": "n_validate",
+      "status": "ok",
+      "ms": 0,
+      "findings": 3,
+      "errors": 3
+     },
+     {
+      "node": "n_score",
+      "status": "ok",
+      "ms": 0,
+      "confidence": 0.0,
+      "routing": "vlm_fallback"
+     }
+    ]
+   }
+  },
+  {
+   "id": "syn-inv-001",
+   "source": "synthetic",
+   "label": "Synthetic invoice · template prose",
+   "expected_type": "invoice",
+   "text_preview": "INVOICE\n\nInvoice TW-2024-7155 was issued by Solstice Medical Devices (tax id 889.337.415-6) on April 20, 2026 to Wayne Enterprises.\nThe amount of GBP 1,760.55 (subtotal 1,455.00 plus tax 305.55) is payable by June 04, 2026 under Net 45 terms.\n\nItems: Maintenance visit x5 = 375.00; Consulting hours x9 = 1080.00",
+   "ground_truth": {
+    "currency": "GBP",
+    "due_date": "2026-06-04",
+    "invoice_number": "TW-2024-7155",
+    "issue_date": "2026-04-20",
+    "payment_terms": "Net 45",
+    "subtotal": 1455.0,
+    "tax": 305.55,
+    "total": 1760.55,
+    "vendor": "Solstice Medical Devices",
+    "vendor_tax_id": "889.337.415-6"
+   },
+   "result": {
+    "trace_id": "4ce6d83c6d8543c4a893dbb6afd172c3",
+    "document_type": "invoice",
+    "classifier_method": "heuristic",
+    "fields": [
+     {
+      "name": "currency",
+      "value": "GBP",
+      "confidence": 0.7,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "vendor",
+      "value": "Wayne Enterprises.",
+      "confidence": 0.6,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "total",
+      "value": 1455.0,
+      "confidence": 0.6,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     }
+    ],
+    "tables": [],
+    "findings": [
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "invoice_number",
+      "message": "required field 'invoice_number' not found",
+      "details": {}
+     },
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "vendor_tax_id",
+      "message": "required field 'vendor_tax_id' not found",
+      "details": {}
+     },
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "issue_date",
+      "message": "required field 'issue_date' not found",
+      "details": {}
+     },
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "subtotal",
+      "message": "required field 'subtotal' not found",
+      "details": {}
+     },
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "tax",
+      "message": "required field 'tax' not found",
+      "details": {}
+     }
+    ],
+    "overall_confidence": 0.0,
+    "routing": "vlm_fallback",
+    "pipeline_used": "text",
+    "extractor_method": "heuristic",
+    "vlm_reprocessed": false,
+    "n_pages": 1,
+    "latency_ms": 42,
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0,
+     "cost_usd": 0.0,
+     "llm_calls": 0
+    },
+    "node_log": [
+     {
+      "node": "n_ingest",
+      "status": "ok",
+      "ms": 36,
+      "path": "text",
+      "pages": 1,
+      "chars": 410
+     },
+     {
+      "node": "n_classify",
+      "status": "ok",
+      "ms": 0,
+      "doc_type": "invoice",
+      "method": "heuristic",
+      "conf": 0.95
+     },
+     {
+      "node": "n_tables",
+      "status": "ok",
+      "ms": 0,
+      "tables": 0
+     },
+     {
+      "node": "n_extract",
+      "status": "ok",
+      "ms": 0,
+      "fields": 3,
+      "method": "heuristic"
+     },
+     {
+      "node": "n_validate",
+      "status": "ok",
+      "ms": 0,
+      "findings": 5,
+      "errors": 5
+     },
+     {
+      "node": "n_score",
+      "status": "ok",
+      "ms": 0,
+      "confidence": 0.0,
+      "routing": "vlm_fallback"
+     }
+    ]
+   }
+  },
+  {
+   "id": "syn-inv-004",
+   "source": "synthetic",
+   "label": "Synthetic invoice · template es",
+   "expected_type": "invoice",
+   "text_preview": "FACTURA DE VENTA\nForgecraft Ironworks\nNIT: 895.395.850-6\nFactura No: FC-2024-1989\nFecha: 03/08/2026\nVencimiento: 18/08/2026\nCliente: Umbrella Health\nMoneda: EUR\n\nCoffee beans 1kg  x3  55.20\nOffice chairs  x3  449.97\nMaintenance visit  x5  375.00\n\nSubtotal: 880,17\nIVA: 184,84\nTotal a pagar: 1.065,01\nCondiciones de pago: Net 15",
+   "ground_truth": {
+    "currency": "EUR",
+    "due_date": "2026-08-18",
+    "invoice_number": "FC-2024-1989",
+    "issue_date": "2026-08-03",
+    "payment_terms": "Net 15",
+    "subtotal": 880.17,
+    "tax": 184.84,
+    "total": 1065.01,
+    "vendor": "Forgecraft Ironworks",
+    "vendor_tax_id": "895.395.850-6"
+   },
+   "result": {
+    "trace_id": "39570a01e671423dbd71f01fe94628f6",
+    "document_type": "invoice",
+    "classifier_method": "heuristic",
+    "fields": [
+     {
+      "name": "invoice_number",
+      "value": "FC-2024-1989",
+      "confidence": 0.76,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "vendor_tax_id",
+      "value": "895.395.850-6",
+      "confidence": 0.92,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "issue_date",
+      "value": "2026-08-03",
+      "confidence": 0.76,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "due_date",
+      "value": "2026-08-18",
+      "confidence": 0.8,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "currency",
+      "value": "EUR",
+      "confidence": 0.88,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "subtotal",
+      "value": 880.17,
+      "confidence": 0.92,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "tax",
+      "value": 184.84,
+      "confidence": 0.84,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "total",
+      "value": 1065.01,
+      "confidence": 0.6,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "payment_terms",
+      "value": "Net 15",
+      "confidence": 0.84,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "vendor",
+      "value": "Forgecraft Ironworks",
+      "confidence": 0.6,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     }
+    ],
+    "tables": [
+     {
+      "page": 1,
+      "headers": [
+       "Description",
+       "Qty",
+       "Unit price",
+       "Amount"
       ],
-      "inference_ms": 2287.0
-    }
-  ]
+      "rows": [
+       [
+        "Coffee beans 1kg",
+        "3",
+        "18.40",
+        "55.20"
+       ],
+       [
+        "Office chairs",
+        "3",
+        "149.99",
+        "449.97"
+       ],
+       [
+        "Maintenance visit",
+        "5",
+        "75.00",
+        "375.00"
+       ]
+      ],
+      "confidence": 0.9,
+      "backend": "pdfplumber"
+     }
+    ],
+    "findings": [],
+    "overall_confidence": 0.792,
+    "routing": "human_review",
+    "pipeline_used": "text",
+    "extractor_method": "heuristic",
+    "vlm_reprocessed": false,
+    "n_pages": 1,
+    "latency_ms": 37,
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0,
+     "cost_usd": 0.0,
+     "llm_calls": 0
+    },
+    "node_log": [
+     {
+      "node": "n_ingest",
+      "status": "ok",
+      "ms": 15,
+      "path": "text",
+      "pages": 1,
+      "chars": 447
+     },
+     {
+      "node": "n_classify",
+      "status": "ok",
+      "ms": 0,
+      "doc_type": "invoice",
+      "method": "heuristic",
+      "conf": 0.95
+     },
+     {
+      "node": "n_tables",
+      "status": "ok",
+      "ms": 15,
+      "tables": 1
+     },
+     {
+      "node": "n_extract",
+      "status": "ok",
+      "ms": 0,
+      "fields": 10,
+      "method": "heuristic"
+     },
+     {
+      "node": "n_validate",
+      "status": "ok",
+      "ms": 0,
+      "findings": 0,
+      "errors": 0
+     },
+     {
+      "node": "n_score",
+      "status": "ok",
+      "ms": 0,
+      "confidence": 0.792,
+      "routing": "human_review"
+     }
+    ]
+   }
+  },
+  {
+   "id": "syn-rcp-002",
+   "source": "synthetic",
+   "label": "Synthetic receipt · template prose",
+   "expected_type": "receipt",
+   "text_preview": "Thank you for your purchase at Forgecraft Ironworks on January 13, 2026.\nTransaction RC-325939 for 1,299.00 EUR was paid by cash.\nKeep this receipt for returns.",
+   "ground_truth": {
+    "currency": "EUR",
+    "issue_date": "2026-01-13",
+    "payment_method": "cash",
+    "receipt_number": "RC-325939",
+    "total": 1299.0,
+    "vendor": "Forgecraft Ironworks"
+   },
+   "result": {
+    "trace_id": "086a535ff90a463c95c270b8c4794da1",
+    "document_type": "receipt",
+    "classifier_method": "heuristic",
+    "fields": [
+     {
+      "name": "currency",
+      "value": "EUR",
+      "confidence": 0.7,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "payment_method",
+      "value": "cash",
+      "confidence": 0.6,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     }
+    ],
+    "tables": [],
+    "findings": [
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "receipt_number",
+      "message": "required field 'receipt_number' not found",
+      "details": {}
+     },
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "vendor",
+      "message": "required field 'vendor' not found",
+      "details": {}
+     },
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "issue_date",
+      "message": "required field 'issue_date' not found",
+      "details": {}
+     },
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "total",
+      "message": "required field 'total' not found",
+      "details": {}
+     }
+    ],
+    "overall_confidence": 0.033,
+    "routing": "vlm_fallback",
+    "pipeline_used": "text",
+    "extractor_method": "heuristic",
+    "vlm_reprocessed": false,
+    "n_pages": 1,
+    "latency_ms": 10,
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0,
+     "cost_usd": 0.0,
+     "llm_calls": 0
+    },
+    "node_log": [
+     {
+      "node": "n_ingest",
+      "status": "ok",
+      "ms": 4,
+      "path": "text",
+      "pages": 1,
+      "chars": 160
+     },
+     {
+      "node": "n_classify",
+      "status": "ok",
+      "ms": 0,
+      "doc_type": "receipt",
+      "method": "heuristic",
+      "conf": 0.95
+     },
+     {
+      "node": "n_tables",
+      "status": "ok",
+      "ms": 0,
+      "tables": 0
+     },
+     {
+      "node": "n_extract",
+      "status": "ok",
+      "ms": 0,
+      "fields": 2,
+      "method": "heuristic"
+     },
+     {
+      "node": "n_validate",
+      "status": "ok",
+      "ms": 0,
+      "findings": 4,
+      "errors": 4
+     },
+     {
+      "node": "n_score",
+      "status": "ok",
+      "ms": 0,
+      "confidence": 0.033,
+      "routing": "vlm_fallback"
+     }
+    ]
+   }
+  },
+  {
+   "id": "syn-ctr-003",
+   "source": "synthetic",
+   "label": "Synthetic contract · template letter",
+   "expected_type": "contract",
+   "text_preview": "Toronto, January 17, 2026\n\nDear Maria Fernanda Rojas,\n\nThis letter confirms agreement SOW-2025-268 between Andes Logistics S.A. and Vandelay Importers, commencing on 17/01/2026 for a period of 24 months.\nThe total fee payable under this agreement is USD 267,000.00.\nThis agreement shall be governed by the laws of Germany.\n\nYours faithfully,",
+   "ground_truth": {
+    "contract_number": "SOW-2025-268",
+    "currency": "USD",
+    "effective_date": "2026-01-17",
+    "governing_law": "Germany",
+    "parties": "Andes Logistics S.A.; Vandelay Importers",
+    "term_months": 24,
+    "total_value": 267000.0
+   },
+   "result": {
+    "trace_id": "d944fbc556bc4399971201ae426f4114",
+    "document_type": "contract",
+    "classifier_method": "heuristic",
+    "fields": [
+     {
+      "name": "parties",
+      "value": "Andes Logistics S.A.; Vandelay Importers",
+      "confidence": 0.7,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "currency",
+      "value": "USD",
+      "confidence": 0.65,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     }
+    ],
+    "tables": [],
+    "findings": [
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "contract_number",
+      "message": "required field 'contract_number' not found",
+      "details": {}
+     },
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "effective_date",
+      "message": "required field 'effective_date' not found",
+      "details": {}
+     },
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "term_months",
+      "message": "required field 'term_months' not found",
+      "details": {}
+     },
+     {
+      "severity": "error",
+      "code": "missing_required",
+      "field": "total_value",
+      "message": "required field 'total_value' not found",
+      "details": {}
+     }
+    ],
+    "overall_confidence": 0.005,
+    "routing": "vlm_fallback",
+    "pipeline_used": "text",
+    "extractor_method": "heuristic",
+    "vlm_reprocessed": false,
+    "n_pages": 1,
+    "latency_ms": 14,
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0,
+     "cost_usd": 0.0,
+     "llm_calls": 0
+    },
+    "node_log": [
+     {
+      "node": "n_ingest",
+      "status": "ok",
+      "ms": 7,
+      "path": "text",
+      "pages": 1,
+      "chars": 310
+     },
+     {
+      "node": "n_classify",
+      "status": "ok",
+      "ms": 0,
+      "doc_type": "contract",
+      "method": "heuristic",
+      "conf": 0.95
+     },
+     {
+      "node": "n_tables",
+      "status": "ok",
+      "ms": 0,
+      "tables": 0
+     },
+     {
+      "node": "n_extract",
+      "status": "ok",
+      "ms": 0,
+      "fields": 2,
+      "method": "heuristic"
+     },
+     {
+      "node": "n_validate",
+      "status": "ok",
+      "ms": 0,
+      "findings": 4,
+      "errors": 4
+     },
+     {
+      "node": "n_score",
+      "status": "ok",
+      "ms": 0,
+      "confidence": 0.005,
+      "routing": "vlm_fallback"
+     }
+    ]
+   }
+  },
+  {
+   "id": "syn-ctr-001",
+   "source": "synthetic",
+   "label": "Synthetic contract · template recital",
+   "expected_type": "contract",
+   "text_preview": "MASTER SERVICES AGREEMENT\nContract No: CTR-2024-987\n\nThis Agreement is entered into as of February 17, 2026 (the Effective Date) between Tidewater Supplies Inc and Pied Piper.\n\n1. Term. The initial term of this Agreement is 36 months from the Effective Date.\n2. Fees. The total contract value is EUR 401,000.00, payable in equal monthly instalments.\n3. Governing Law: Republic of Colombia.\n\nIN WITNESS WHEREOF the parties have executed this Agreement.",
+   "ground_truth": {
+    "contract_number": "CTR-2024-987",
+    "currency": "EUR",
+    "effective_date": "2026-02-17",
+    "governing_law": "Republic of Colombia",
+    "parties": "Tidewater Supplies Inc; Pied Piper",
+    "term_months": 36,
+    "total_value": 401000.0
+   },
+   "result": {
+    "trace_id": "57c523242f0842b1ace0bab9e155c98f",
+    "document_type": "contract",
+    "classifier_method": "heuristic",
+    "fields": [
+     {
+      "name": "contract_number",
+      "value": "CTR-2024-987",
+      "confidence": 0.88,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "governing_law",
+      "value": "Republic of Colombia",
+      "confidence": 0.92,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "parties",
+      "value": "Tidewater Supplies Inc; Pied Pipe",
+      "confidence": 0.7,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "effective_date",
+      "value": "2026-02-17",
+      "confidence": 0.7,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "term_months",
+      "value": 36,
+      "confidence": 0.7,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "total_value",
+      "value": 401000.0,
+      "confidence": 0.7,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "currency",
+      "value": "EUR",
+      "confidence": 0.65,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     }
+    ],
+    "tables": [],
+    "findings": [],
+    "overall_confidence": 0.75,
+    "routing": "human_review",
+    "pipeline_used": "text",
+    "extractor_method": "heuristic",
+    "vlm_reprocessed": false,
+    "n_pages": 1,
+    "latency_ms": 16,
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0,
+     "cost_usd": 0.0,
+     "llm_calls": 0
+    },
+    "node_log": [
+     {
+      "node": "n_ingest",
+      "status": "ok",
+      "ms": 9,
+      "path": "text",
+      "pages": 1,
+      "chars": 446
+     },
+     {
+      "node": "n_classify",
+      "status": "ok",
+      "ms": 0,
+      "doc_type": "contract",
+      "method": "heuristic",
+      "conf": 0.95
+     },
+     {
+      "node": "n_tables",
+      "status": "ok",
+      "ms": 0,
+      "tables": 0
+     },
+     {
+      "node": "n_extract",
+      "status": "ok",
+      "ms": 0,
+      "fields": 7,
+      "method": "heuristic"
+     },
+     {
+      "node": "n_validate",
+      "status": "ok",
+      "ms": 0,
+      "findings": 0,
+      "errors": 0
+     },
+     {
+      "node": "n_score",
+      "status": "ok",
+      "ms": 0,
+      "confidence": 0.75,
+      "routing": "human_review"
+     }
+    ]
+   }
+  },
+  {
+   "id": "syn-frm-002",
+   "source": "synthetic",
+   "label": "Synthetic form · template application",
+   "expected_type": "form",
+   "text_preview": "APPLICATION FORM\nPlease print clearly\n\nForm ID: F-28018\nName: John A. Whitaker\nDepartment: Procurement\nDate: 2026-03-08\nPosition: Technician\nLocation: Austin\nPhone: +57 320 284 8460\nEmail: john@example.org\n\nSignature: ____________________",
+   "ground_truth": {
+    "date": "2026-03-08",
+    "department": "Procurement",
+    "form_id": "F-28018",
+    "pairs": [
+     [
+      "Position",
+      "Technician"
+     ],
+     [
+      "Location",
+      "Austin"
+     ],
+     [
+      "Phone",
+      "+57 320 284 8460"
+     ],
+     [
+      "Email",
+      "john@example.org"
+     ]
+    ],
+    "submitter": "John A. Whitaker"
+   },
+   "result": {
+    "trace_id": "519b9dcdd9d64098bb8d7b02b5799450",
+    "document_type": "form",
+    "classifier_method": "heuristic",
+    "fields": [
+     {
+      "name": "form_id",
+      "value": "F-28018",
+      "confidence": 0.92,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "submitter",
+      "value": "John A. Whitaker",
+      "confidence": 0.8,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "date",
+      "value": "2026-03-08",
+      "confidence": 0.92,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "department",
+      "value": "Procurement",
+      "confidence": 0.92,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     }
+    ],
+    "tables": [],
+    "findings": [],
+    "overall_confidence": 0.89,
+    "routing": "human_review",
+    "pipeline_used": "text",
+    "extractor_method": "heuristic",
+    "vlm_reprocessed": false,
+    "n_pages": 1,
+    "latency_ms": 12,
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0,
+     "cost_usd": 0.0,
+     "llm_calls": 0
+    },
+    "node_log": [
+     {
+      "node": "n_ingest",
+      "status": "ok",
+      "ms": 6,
+      "path": "text",
+      "pages": 1,
+      "chars": 236
+     },
+     {
+      "node": "n_classify",
+      "status": "ok",
+      "ms": 0,
+      "doc_type": "form",
+      "method": "heuristic",
+      "conf": 0.95
+     },
+     {
+      "node": "n_tables",
+      "status": "ok",
+      "ms": 0,
+      "tables": 0
+     },
+     {
+      "node": "n_extract",
+      "status": "ok",
+      "ms": 0,
+      "fields": 4,
+      "method": "heuristic"
+     },
+     {
+      "node": "n_validate",
+      "status": "ok",
+      "ms": 0,
+      "findings": 0,
+      "errors": 0
+     },
+     {
+      "node": "n_score",
+      "status": "ok",
+      "ms": 0,
+      "confidence": 0.89,
+      "routing": "human_review"
+     }
+    ]
+   }
+  },
+  {
+   "id": "syn-rpt-001",
+   "source": "synthetic",
+   "label": "Synthetic report · template technical",
+   "expected_type": "report",
+   "text_preview": "Load Test Report\nAuthor: Daniel Ortiz\nReport date: 24/09/2026\nPeriod: FY2025\n\nFindings\n- 4 issues were identified during the review.\n- No critical defects remain open.",
+   "ground_truth": {
+    "author": "Daniel Ortiz",
+    "date": "2026-09-24",
+    "fiscal_year": "2025",
+    "title": "Load Test Report"
+   },
+   "result": {
+    "trace_id": "3bff1a76ef1a4c3797b7d083910a8bc5",
+    "document_type": "report",
+    "classifier_method": "heuristic",
+    "fields": [
+     {
+      "name": "author",
+      "value": "Daniel Ortiz",
+      "confidence": 0.92,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "date",
+      "value": "2026-09-24",
+      "confidence": 0.76,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "fiscal_year",
+      "value": "2025",
+      "confidence": 0.8,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     },
+     {
+      "name": "title",
+      "value": "Load Test Report",
+      "confidence": 0.6,
+      "source": "regex",
+      "page": null,
+      "bbox": null,
+      "redacted": false
+     }
+    ],
+    "tables": [],
+    "findings": [],
+    "overall_confidence": 0.77,
+    "routing": "human_review",
+    "pipeline_used": "text",
+    "extractor_method": "heuristic",
+    "vlm_reprocessed": false,
+    "n_pages": 1,
+    "latency_ms": 11,
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0,
+     "cost_usd": 0.0,
+     "llm_calls": 0
+    },
+    "node_log": [
+     {
+      "node": "n_ingest",
+      "status": "ok",
+      "ms": 5,
+      "path": "text",
+      "pages": 1,
+      "chars": 166
+     },
+     {
+      "node": "n_classify",
+      "status": "ok",
+      "ms": 0,
+      "doc_type": "report",
+      "method": "heuristic",
+      "conf": 0.923
+     },
+     {
+      "node": "n_tables",
+      "status": "ok",
+      "ms": 0,
+      "tables": 0
+     },
+     {
+      "node": "n_extract",
+      "status": "ok",
+      "ms": 0,
+      "fields": 4,
+      "method": "heuristic"
+     },
+     {
+      "node": "n_validate",
+      "status": "ok",
+      "ms": 0,
+      "findings": 0,
+      "errors": 0
+     },
+     {
+      "node": "n_score",
+      "status": "ok",
+      "ms": 0,
+      "confidence": 0.77,
+      "routing": "human_review"
+     }
+    ]
+   }
+  }
+ ]
 }
