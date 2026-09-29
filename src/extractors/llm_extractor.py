@@ -1,97 +1,184 @@
-"""Claude-based field extractor with strict Pydantic-validated JSON output."""
+"""Claude-based field extractor with schema-constrained JSON output.
+
+Without an API key the extractor delegates to :class:`HeuristicExtractor`.
+With a key, model output is validated into :class:`ExtractedField`; malformed
+output is logged, reported as a finding-worthy ``method`` and the heuristic
+result is returned instead (never a silent pass).
+"""
+
 from __future__ import annotations
 
-import json
-from tenacity import retry, stop_after_attempt, wait_exponential
+from typing import Any
 
-from src.api.schemas import ExtractedField
-from src.extractors.schemas_by_type import REQUIRED_FIELDS
+from loguru import logger
+from PIL import Image
+from pydantic import ValidationError
 
+from src.extractors.heuristic import HeuristicExtractor
+from src.extractors.normalize import normalize_amount, normalize_date
+from src.llm.client import ClaudeClient, LLMOutputError, image_block, text_block
+from src.parsers.ocr_parser import image_to_png_bytes
+from src.schemas.doc_types import DATE_FIELDS, INTEGER_FIELDS, NUMERIC_FIELDS, schema_field_names
+from src.schemas.document import DocumentType, ExtractedField, FieldSource, UsageStats
 
 SYSTEM_TEMPLATE = """You extract structured fields from {doc_type} documents.
 
-For each REQUIRED field, output a JSON object:
-  {{
-    "name": "<field_name>",
-    "value": <value or null if missing>,
-    "confidence": 0.0 - 1.0
-  }}
+Return ONLY a JSON object with this shape:
+{{"fields": [{{"name": "<field>", "value": <value or null>, "confidence": <0.0-1.0>}}, ...]}}
 
-Required fields for {doc_type}:
-{required_list}
+Fields to extract for {doc_type} (use exactly these names):
+{field_list}
 
-Output ONLY JSON with this exact shape:
-{{ "fields": [ {{...}}, ... ] }}
-
-Confidence guidelines:
-- 0.95+ : value appears verbatim in source
-- 0.80-0.95 : value derived but high-confidence (e.g. subtotal+tax → total)
-- 0.60-0.80 : best inference but ambiguity exists
-- < 0.60 : guess; consider returning null instead
-
-Values:
-- numbers as numbers (no currency symbols)
-- dates in ISO-8601 (YYYY-MM-DD)
-- IDs as strings exactly as written
+Rules:
+1. Output one entry per field above; use null when the value is absent.
+2. Numbers as plain numbers (no currency symbols, no thousands separators).
+3. Dates in ISO-8601 (YYYY-MM-DD).
+4. Identifiers as strings exactly as written.
+5. Confidence: 0.95+ verbatim in source; 0.80-0.95 derived (e.g. subtotal+tax=total);
+   0.60-0.80 ambiguous; below 0.60 prefer null.
 """
 
 
-class LLMExtractor:
-    def __init__(self, model: str, api_key: str | None) -> None:
-        self.model = model
-        self.api_key = api_key
+class LLMExtractionResult:
+    """Fields plus provenance and usage for one extraction call."""
 
-    @retry(stop=stop_after_attempt(2), wait=wait_exponential(multiplier=1, min=1, max=5), reraise=True)
-    async def extract(self, text: str, doc_type: str) -> list[ExtractedField]:
-        if not self.api_key:
-            return self._heuristic_extract(text, doc_type)
-        from langchain_anthropic import ChatAnthropic
-        from langchain_core.messages import HumanMessage, SystemMessage
-        required = REQUIRED_FIELDS.get(doc_type, REQUIRED_FIELDS["form"])
-        sys = SYSTEM_TEMPLATE.format(
-            doc_type=doc_type, required_list="\n".join(f"  - {f}" for f in required),
-        )
-        chat = ChatAnthropic(model=self.model, api_key=self.api_key, temperature=0, max_tokens=1500, timeout=20.0)
-        resp = await chat.ainvoke([SystemMessage(content=sys), HumanMessage(content=text[:8000])])
-        body = resp.content if isinstance(resp.content, str) else str(resp.content)
-        body = body.strip()
-        if body.startswith("```"):
-            body = body.strip("`")
-            if body.lower().startswith("json"):
-                body = body[4:].lstrip()
+    def __init__(self, fields: list[ExtractedField], method: str, usage: UsageStats) -> None:
+        self.fields = fields
+        self.method = method
+        self.usage = usage
+
+
+def _system_prompt(doc_type: DocumentType) -> str:
+    names = [n for n in schema_field_names(doc_type) if n != "fields"]
+    return SYSTEM_TEMPLATE.format(
+        doc_type=doc_type, field_list="\n".join(f"  - {n}" for n in names)
+    )
+
+
+def fields_from_model_output(
+    data: dict[str, Any], doc_type: DocumentType, source: FieldSource
+) -> list[ExtractedField]:
+    """Validate the model's ``{"fields": [...]}`` payload into domain objects.
+
+    Unknown field names are dropped, values are coerced by field kind and
+    ``null`` values are skipped.
+
+    Raises:
+        LLMOutputError: If the payload has the wrong shape or invalid entries.
+    """
+    raw_fields = data.get("fields")
+    if not isinstance(raw_fields, list):
+        raise LLMOutputError("model output missing 'fields' list")
+    allowed = set(schema_field_names(doc_type))
+    out: list[ExtractedField] = []
+    for item in raw_fields:
+        if not isinstance(item, dict):
+            raise LLMOutputError("field entry is not an object")
+        name = str(item.get("name", ""))
+        if name not in allowed:
+            logger.debug("extractor: dropping unknown field {!r}", name)
+            continue
+        value = item.get("value")
+        if value is None or value == "":
+            continue
+        if name in NUMERIC_FIELDS:
+            value = normalize_amount(value if isinstance(value, int | float) else str(value))
+        elif name in INTEGER_FIELDS:
+            try:
+                value = int(float(str(value)))
+            except ValueError as exc:
+                raise LLMOutputError(f"{name} is not an integer") from exc
+        elif name in DATE_FIELDS:
+            value = normalize_date(str(value)) or str(value)
+        elif isinstance(value, dict | list):
+            value = str(value)
         try:
-            raw = json.loads(body)
-            return [ExtractedField(**f, source="extractor") for f in raw.get("fields", [])]
-        except Exception:
-            return self._heuristic_extract(text, doc_type)
+            out.append(
+                ExtractedField(
+                    name=name,
+                    value=value,
+                    confidence=float(item.get("confidence", 0.7)),
+                    source=source,
+                )
+            )
+        except (ValidationError, TypeError, ValueError) as exc:
+            raise LLMOutputError(f"invalid field entry {name!r}: {exc}") from exc
+    return out
 
-    @staticmethod
-    def _heuristic_extract(text: str, doc_type: str) -> list[ExtractedField]:
-        """Regex-based fallback. Limited but works without API key."""
-        import re
-        fields: list[ExtractedField] = []
-        # Invoice / receipt heuristics
-        if doc_type in ("invoice", "receipt"):
-            inv_match = re.search(r"(?:invoice|receipt)[\s#:]+([A-Z0-9\-]+)", text, re.IGNORECASE)
-            if inv_match:
-                key = "invoice_number" if doc_type == "invoice" else "receipt_number"
-                fields.append(ExtractedField(name=key, value=inv_match.group(1), confidence=0.85, source="regex"))
-            tax_match = re.search(r"(?:NIT|Tax ID|VAT)[:\s]+([\d\.\-A-Z]+)", text, re.IGNORECASE)
-            if tax_match:
-                fields.append(ExtractedField(name="vendor_tax_id", value=tax_match.group(1).strip(),
-                                              confidence=0.80, source="regex"))
-            date_match = re.search(r"(\d{4}-\d{2}-\d{2})", text)
-            if date_match:
-                fields.append(ExtractedField(name="issue_date", value=date_match.group(1),
-                                              confidence=0.90, source="regex"))
-            total_match = re.search(r"Total[^\d]*([\d,]+\.\d{2})", text, re.IGNORECASE)
-            if total_match:
-                try:
-                    val = float(total_match.group(1).replace(",", ""))
-                    fields.append(ExtractedField(name="total", value=val, confidence=0.85, source="regex"))
-                except ValueError:
-                    pass
-            cur_match = re.search(r"\b(USD|EUR|COP|GBP|MXN)\b", text)
-            if cur_match:
-                fields.append(ExtractedField(name="currency", value=cur_match.group(1), confidence=0.95, source="regex"))
-        return fields
+
+class LLMExtractor:
+    """Text extractor: Claude when enabled, heuristic otherwise.
+
+    Args:
+        llm: Claude client (may be ``None``).
+        heuristic: Fallback extractor.
+        max_chars: Characters of document text sent to the model.
+    """
+
+    def __init__(
+        self,
+        llm: ClaudeClient | None,
+        heuristic: HeuristicExtractor | None = None,
+        max_chars: int = 12_000,
+    ) -> None:
+        self._llm = llm
+        self._heuristic = heuristic or HeuristicExtractor()
+        self._max_chars = max_chars
+
+    @property
+    def llm_enabled(self) -> bool:
+        """True when Claude will be used."""
+        return self._llm is not None and self._llm.enabled
+
+    async def extract(self, text: str, doc_type: DocumentType) -> LLMExtractionResult:
+        """Extract fields from text.
+
+        Returns:
+            Result whose ``method`` is ``claude``, ``heuristic`` or
+            ``heuristic_after_llm_error`` (Claude answered but unparsably).
+        """
+        if not self.llm_enabled or self._llm is None:
+            res = self._heuristic.extract(text, doc_type)
+            return LLMExtractionResult(res.fields, "heuristic", UsageStats())
+        try:
+            data, result = await self._llm.complete_json(
+                system=_system_prompt(doc_type), content=text[: self._max_chars], max_tokens=1500
+            )
+            fields = fields_from_model_output(data, doc_type, "extractor")
+        except LLMOutputError as exc:
+            logger.warning("extractor: unusable model output ({}); using heuristic", exc)
+            res = self._heuristic.extract(text, doc_type)
+            return LLMExtractionResult(res.fields, "heuristic_after_llm_error", UsageStats())
+        return LLMExtractionResult(fields, "claude", result.usage)
+
+
+class VLMExtractor:
+    """Claude Vision extractor working directly on page images ("Vision direct")."""
+
+    def __init__(self, llm: ClaudeClient, max_pages: int = 4) -> None:
+        self._llm = llm
+        self._max_pages = max_pages
+
+    @property
+    def enabled(self) -> bool:
+        """True when the client has credentials."""
+        return self._llm.enabled
+
+    async def extract(
+        self, images: list[Image.Image], doc_type: DocumentType
+    ) -> LLMExtractionResult:
+        """Extract fields from page images.
+
+        Raises:
+            LLMDisabledError: If no API key is configured.
+            LLMOutputError: If the model output cannot be validated.
+        """
+        content: list[dict[str, Any]] = [
+            image_block(image_to_png_bytes(img)) for img in images[: self._max_pages]
+        ]
+        content.append(text_block(f"Extract the {doc_type} fields from these pages."))
+        data, result = await self._llm.complete_json(
+            system=_system_prompt(doc_type), content=content, max_tokens=1500
+        )
+        fields = fields_from_model_output(data, doc_type, "vlm")
+        return LLMExtractionResult(fields, "claude_vision", result.usage)

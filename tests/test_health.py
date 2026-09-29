@@ -1,11 +1,12 @@
 from fastapi.testclient import TestClient
-from src.api.main import app
 
 
-def test_health_returns_ok():
-    with TestClient(app) as c:
-        r = c.get("/health")
-        assert r.status_code == 200
-        data = r.json()
-        assert data["status"] == "ok"
-        assert "version" in data
+def test_health_returns_ok(client: TestClient) -> None:
+    r = client.get("/health")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["status"] == "ok"
+    assert data["model"] == "claude-sonnet-4-5-20250929"
+    assert data["llm_enabled"] is False
+    assert data["database"] is False
+    assert "version" in data

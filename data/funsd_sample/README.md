@@ -1,39 +1,51 @@
-# FUNSD sample
+# Muestra de FUNSD
 
-5 anonymized annotation JSON files from the FUNSD dataset (form understanding
-in noisy scanned documents). The full dataset is 199 documents (~17 MB) and
-lives at https://guillaumejaume.github.io/FUNSD/dataset.zip.
+Cinco archivos de anotación del conjunto FUNSD (*Form Understanding in Noisy
+Scanned Documents*, Jaume, Ekenel y Thiran, 2019). El conjunto completo tiene
+199 formularios (149 de entrenamiento, 50 de prueba), pesa ~17 MB con imágenes
+y se distribuye en https://guillaumejaume.github.io/FUNSD/dataset.zip bajo
+una licencia de investigación no comercial.
 
-## Schema
+Aquí solo se incluyen las anotaciones (sin imágenes). Se usan para:
 
-Each `.json` file follows FUNSD's `form` schema:
+- construir pares pregunta → respuesta reales para la evaluación
+  (`src/synth/funsd.py`, 281 pares en total), y
+- poblar la galería de la demo con formularios reales.
+
+| Archivo | Entidades | Pares Q→A |
+|---|---|---|
+| `0000971160.json` | 24 | 8 |
+| `0000989556.json` | 100 | 42 |
+| `0000990274.json` | 31 | 13 |
+| `0000999294.json` | 181 | 195 |
+| `0001118259.json` | 31 | 23 |
+
+## Esquema
 
 ```json
 {
   "form": [
     {
       "id": 0,
-      "text": "Annual Report",
-      "box": [123, 45, 789, 80],
-      "linking": [],
-      "label": "header",
-      "words": [{"text": "Annual", "box": [...]}]
-    },
-    ...
+      "text": "Date:",
+      "box": [482, 268, 518, 282],
+      "linking": [[3, 12]],
+      "label": "question",
+      "words": [{"text": "Date:", "box": [482, 268, 518, 282]}]
+    }
   ]
 }
 ```
 
-Labels in FUNSD: `header`, `question`, `answer`, `other`.
+Etiquetas: `header`, `question`, `answer`, `other`. `linking` enlaza
+pregunta con respuesta por `id`.
 
-## Reproducing the full set
+## Conjunto completo
 
 ```bash
-curl -L -O https://guillaumejaume.github.io/FUNSD/dataset.zip
-unzip dataset.zip
-# 149 training + 50 test forms with annotations and images
+python scripts/download_data.py --dataset funsd   # descarga, verifica SHA-256 y extrae en data/raw/funsd
 ```
 
-The 199-form full set was used to measure field-level F1 in the project
-report. The 5 samples here are enough to demonstrate the parser pipeline
-without checking 17 MB of images into git.
+Ningún número del repositorio proviene del conjunto completo: la corrida
+registrada en `eval/RESULTS.md` usa únicamente estas cinco anotaciones más
+los documentos sintéticos.
